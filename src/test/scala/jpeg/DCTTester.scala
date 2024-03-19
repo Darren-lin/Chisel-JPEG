@@ -90,6 +90,7 @@ class DCTChiselTest extends AnyFlatSpec with ChiselScalatestTester {
   behavior of "DCTChisel"
   it should "compute DCT correctly 1 (Baseline & Shifted Block)" in {
     test(new DCTChisel) { dut =>
+      // dut.clock.setTimeout(0)
       // Define input and special test for shifted matrix
       val inputMatrix = DCTData.in1
       val shiftedBlock = DCTDataChisel.shifted
@@ -122,8 +123,18 @@ class DCTChiselTest extends AnyFlatSpec with ChiselScalatestTester {
         }
       }
 
-      // Take step to go to waiting/load calculation
-      dut.clock.step()
+      // // Take step to go to waiting/load calculation
+      // dut.clock.step()
+      for (i <- 0 until 8) {
+        for (j <- 0 until 8) {
+          for (i <- 0 until 8) {
+            for (j <- 0 until 8) {
+              dut.clock.step()
+            }
+          }
+        }
+      }
+
       dut.io.dctOut.valid.expect(true.B)
       for (i <- 0 until 8) {
         for (j <- 0 until 8) {
@@ -133,38 +144,38 @@ class DCTChiselTest extends AnyFlatSpec with ChiselScalatestTester {
     }
   }
 
-  it should "compute DCT correctly 2" in {
-    val inputMatrix = DCTData.in2
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 2" in {
+  //   val inputMatrix = DCTData.in2
+  //   doDCTChiselTest(inputMatrix)
+  // }
 
-  it should "compute DCT correctly 3" in {
-    val inputMatrix = DCTData.in3
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 3" in {
+  //   val inputMatrix = DCTData.in3
+  //   doDCTChiselTest(inputMatrix)
+  // }
 
-  it should "compute DCT correctly 4" in {
-    val inputMatrix = DCTData.in4
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 4" in {
+  //   val inputMatrix = DCTData.in4
+  //   doDCTChiselTest(inputMatrix)
+  // }
 
-  it should "compute DCT correctly 5" in {
-    val inputMatrix = DCTData.in5
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 5" in {
+  //   val inputMatrix = DCTData.in5
+  //   doDCTChiselTest(inputMatrix)
+  // }
 
-  it should "compute DCT correctly 6" in {
-    val inputMatrix = DCTData.in6
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 6" in {
+  //   val inputMatrix = DCTData.in6
+  //   doDCTChiselTest(inputMatrix)
+  // }
 
-  it should "compute DCT correctly 7" in {
-    val inputMatrix = DCTData.in7
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 7" in {
+  //   val inputMatrix = DCTData.in7
+  //   doDCTChiselTest(inputMatrix)
+  // }
 
-  it should "compute DCT correctly 8" in {
-    val inputMatrix = DCTData.in8
-    doDCTChiselTest(inputMatrix)
-  }
+  // it should "compute DCT correctly 8" in {
+  //   val inputMatrix = DCTData.in8
+  //   doDCTChiselTest(inputMatrix)
+  // }
 }

@@ -59,102 +59,16 @@ class DCTChisel extends Module {
 
 
     // Function to compute DCT values for each element of input matrix
-    // def DCT(matrix: Vec[Vec[SInt]]): Vec[Vec[SInt]] = {
-    //     val dctMatrix = Wire(Vec(8, Vec(8, SInt(32.W))))
-
-        // // Compute DCT
-        // for (u <- 0 until 8) {
-        //     for (v <- 0 until 8) {
-        //         var sum = 0.S
-        //         for (i <- 0 until 8) {
-        //             for (j <- 0 until 8) {
-        //                 val pixelValue = matrix(i)(j)
-        //                 // Scale the cosine values to preserve precision
-        //                 val cosVal = (math.cos((2 * i + 1) * u * Pi / 16) * math.cos((2 * j + 1) * v * Pi / 16) * 100).toInt.S
-        //                 sum = sum +& pixelValue * cosVal
-        //             }
-        //         }
-  
-        //         // Scale alphaU/V to perserve percision
-        //         val alphaU = if (u == 0) (1.0 / math.sqrt(2)) * 100 else 100
-        //         val alphaV = if (v == 0) (1.0 / math.sqrt(2)) * 100 else 100
-        //         val scaledSum = (alphaU.toInt.S * alphaV.toInt.S * sum / 4.S)
-        //         dctMatrix(u)(v) := scaledSum
-        //     }
-        // }
-
-        // dctMatrix
-
-        // Compute DCT
-        // val u = uCount.value
-        // val v = vCount.value
-        // val i = iCount.value
-        // val j = jCount.value
-
-        // val sum = RegInit(0.S(32.W))
-
-        // val cosTable = VecInit.tabulate(360) { i =>
-        //     (math.cos(i * math.Pi / 180) * 100).toInt.S
-        // }
-
-        // when(iCount.value === 0.U && jCount.value === 0.U) {
-        //     sum := 0.S // Initialize sum for each (u, v) iteration
-        // }
-
-        // val pixelValue = matrix(i)(j)
-        
-        // val indexUI = (((2.U * i + 1.U) * u * 1125.U) / 1000.U)//.U //% 100 >= 50
-        // val indexVJ = (((2.U * j + 1.U) * v * 1125.U) / 1000.U)//.U
-
-        
-        // val cosVal = cosTable(indexUI) * cosTable(indexVJ)//(math.cos((2 * i + 1) * u * Pi / 16) * math.cos((2 * j + 1) * v * Pi / 16) * 100).toInt.S
-        // sum := sum +& pixelValue * cosVal
-
-
-        // when(iCount.inc() === 8.U) {
-        //     iCount.value := 0.U
-        //     when(jCount.inc() === 8.U) {
-        //         jCount.value := 0.U
-        //         when(vCount.inc() === 8.U) {
-        //             vCount.value := 0.U
-        //             when(uCount.inc() === 8.U) {
-        //                 uCount.value := 0.U
-        //             }
-        //         }
-        //     }
-        // }
-
-        // //val alphaU = if (u == 0) (1.0 / math.sqrt(2)) * 100 else 100
-        // //val alphaV = if (v == 0) (1.0 / math.sqrt(2)) * 100 else 100
-        // val alphaU = if (u == 0) 70 else 100
-        // val alphaV = if (v == 0) 70 else 100
-        // val scaledSum = (alphaU.toInt.S * alphaV.toInt.S * sum / 4.S)
-        // dctMatrix(u)(v) := scaledSum
-
-        // dctMatrix
-
-    // }
-
     val uCount = Counter(8)
     val vCount = Counter(8)
     val iCount = Counter(8)
     val jCount = Counter(8)
     val sum = RegInit(0.S(32.W)) 
-
-    // var u = 0
-    // var v = 0
     // var sum = 0.S
-    // var alphaU = 0.0
-    // var alphaV = 0.0
 
-    // val u = uCount.value
-    // val v = vCount.value
-    // val i = iCount.value
-    // val j = jCount.value
-    // val sum = RegInit(0.S(32.W))
 
     val cosTable = VecInit.tabulate(360) { i =>
-        (math.cos(i * math.Pi / 180) * 100).toInt.S
+        (math.cos(i * math.Pi / 180) * 10).toInt.S
     }
 
 
@@ -177,12 +91,17 @@ class DCTChisel extends Module {
             }
             io.shiftedOut := shiftedBlock
             state := DCTState.calculating
+            // uCount.value := 0.U
+            // vCount.value := 0.U
+            // iCount.value := 0.U
+            // jCount.value := 0.U
         }
         is(DCTState.calculating) {
             // Assignes output matrix to calculated DCT values
 
-            when(iCount.value === 0.U && jCount.value === 0.U) {
+            when(iCount.value === 7.U && jCount.value === 7.U) {
                 sum := 0.S // Initialize sum for each (u, v) iteration
+                // sum = 0.S
             }
 
             val pixelValue = shiftedBlock(iCount.value)(jCount.value)
@@ -192,21 +111,60 @@ class DCTChisel extends Module {
 
             
             val cosVal = cosTable(indexUI) * cosTable(indexVJ)//(math.cos((2 * i + 1) * u * Pi / 16) * math.cos((2 * j + 1) * v * Pi / 16) * 100).toInt.S
+            // sum := sum +& pixelValue * cosVal
             sum := sum +& pixelValue * cosVal
+            // when(uCount.value === 0.U && vCount.value === 0.U) {
+            //     printf("Sum: %d, u: %d, v: %d, i: %d, j: %d\n", sum, uCount.value,vCount.value,iCount.value,jCount.value)
+            // }
 
 
-            when(iCount.inc() === 8.U) {
-                iCount.value := 0.U
-                when(jCount.inc() === 8.U) {
-                    jCount.value := 0.U
-                    when(vCount.inc() === 8.U) {
-                        vCount.value := 0.U
-                        when(uCount.inc() === 8.U) {
-                            uCount.value := 0.U
+
+            // when(iCount.inc() === 8.U) {
+            //     iCount.value := 0.U
+            //     when(jCount.inc() === 8.U) {
+            //         jCount.value := 0.U
+            //         when(vCount.inc() === 8.U) {
+            //             vCount.value := 0.U
+            //             when(uCount.inc() === 8.U) {
+            //                 uCount.value := 0.U
+            //             }
+            //         }
+            //     }
+            // }
+            when(uCount.value < 7.U) {
+                // v loop
+                when(vCount.value === 7.U && iCount.value === 7.U) {
+                    // Reset v and increment u
+                    vCount.value := 0.U
+                    uCount.inc()
+                }.otherwise {
+                    // i loop
+                    when(iCount.value === 7.U && jCount.value === 7.U) { //iCount.value < 7.U && jCount.value < 7.U
+                        // Reset i and increment v
+                        iCount.value := 0.U
+                        jCount.value := 0.U
+                        vCount.inc()
+                    }.otherwise {
+                        when(jCount.value === 7.U) {
+                            jCount.value := 0.U
+                            when(iCount.value =/= 7.U) {
+                                iCount.inc()
+                            }
+
+                            
+                            // printf("HEREE TEST j: %d\n\n", jCount.value)
+                            
+                        }.otherwise {
+                        // Reset j and increment i
+                            // jCount.value := 0.U
+                            // iCount.inc()
+                            //printf("HEREE TEST j: %d\n\n", jCount.value)
+                            jCount.inc()
                         }
                     }
                 }
             }
+
 
             //val alphaU = if (u == 0) (1.0 / math.sqrt(2)) * 100 else 100
             //val alphaV = if (v == 0) (1.0 / math.sqrt(2)) * 100 else 100
@@ -215,6 +173,19 @@ class DCTChisel extends Module {
             val scaledSum = (alphaU * alphaV * sum / 4.S)
             matrixOutput(uCount.value)(vCount.value) := scaledSum
 
+
+            //Print content of matrixOutput when it's in the waiting state
+            when(1.U === 1.U) {
+                printf("u: %d, v: %d, i: %d, j: %d\n\n", uCount.value,vCount.value,iCount.value,jCount.value)
+                // printf("Content of matrixOutput in calc state:\n")
+                // for (i <- 0 until 8) {
+                //     for (j <- 0 until 8) {
+                //         printf("%d ", matrixOutput(i)(j))
+                //     }
+                //     printf("\n")
+                // }
+                // printf("\n")
+            }
             // matrixOutput := DCT(shiftedBlock)
             state := DCTState.waiting
             validOut := true.B

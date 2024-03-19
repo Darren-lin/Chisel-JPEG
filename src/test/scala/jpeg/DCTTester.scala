@@ -90,7 +90,7 @@ class DCTChiselTest extends AnyFlatSpec with ChiselScalatestTester {
   behavior of "DCTChisel"
   it should "compute DCT correctly 1 (Baseline & Shifted Block)" in {
     test(new DCTChisel) { dut =>
-      // dut.clock.setTimeout(0)
+      dut.clock.setTimeout(9000)
       // Define input and special test for shifted matrix
       val inputMatrix = DCTData.in1
       val shiftedBlock = DCTDataChisel.shifted

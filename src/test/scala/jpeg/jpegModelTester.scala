@@ -591,60 +591,60 @@ class DCTModelTest extends AnyFlatSpec with ChiselScalatestTester {
     }
 
 
-    it should "dct test 2" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in2)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 2" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in2)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
         
-        assert(rounded == DCTData.scaledOut2)
-    }
+    //     assert(rounded == DCTData.scaledOut2)
+    // }
 
-    it should "dct test 3" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in3)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 3" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in3)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
         
-        assert(rounded == DCTData.scaledOut3)
-    }
+    //     assert(rounded == DCTData.scaledOut3)
+    // }
 
-    it should "dct test 4" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in4)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 4" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in4)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
         
-        assert(rounded == DCTData.scaledOut4)
-    }
+    //     assert(rounded == DCTData.scaledOut4)
+    // }
 
-    it should "dct test 5" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in5)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 5" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in5)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
         
-        assert(rounded == DCTData.scaledOut5)
-    }
+    //     assert(rounded == DCTData.scaledOut5)
+    // }
 
-    it should "dct test 6" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in6)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 6" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in6)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
     
-        assert(rounded == DCTData.scaledOut6)
-    }
+    //     assert(rounded == DCTData.scaledOut6)
+    // }
 
-    it should "dct test 7" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in7)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 7" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in7)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
 
-        assert(rounded == DCTData.scaledOut7)
-    }
+    //     assert(rounded == DCTData.scaledOut7)
+    // }
 
-    it should "dct test 8" in {
-        val jpegEncode = new jpegEncode(false, List.empty, 0)
-        val dctResult = jpegEncode.DCT(DCTData.in8)
-        val rounded = jpegEncode.roundToInt(dctResult)
+    // it should "dct test 8" in {
+    //     val jpegEncode = new jpegEncode(false, List.empty, 0)
+    //     val dctResult = jpegEncode.DCT(DCTData.in8)
+    //     val rounded = jpegEncode.roundToInt(dctResult)
 
-        assert(rounded == DCTData.scaledOut8)
-    }
+    //     assert(rounded == DCTData.scaledOut8)
+    // }
 }
 

@@ -108,6 +108,10 @@ class jpegEncode(decompress: Boolean, quantTable: List[List[Int]], encoding: Int
                         
                         val roundedCval = if (cosVal >= 0) floor(cosVal) else ceil(cosVal)
                         sum = sum + pixelValue * roundedCval
+                        if (u == 0 && v == 0){
+                            println("Sum: ",sum, u,v, i, j)
+                        }
+
                     }
                 }
                 val alphaU = if (u == 0) floor((1.0 / math.sqrt(2)) * 100) else 100

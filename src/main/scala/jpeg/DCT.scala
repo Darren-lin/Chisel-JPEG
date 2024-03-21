@@ -107,7 +107,7 @@ class DCTChisel extends Module {
             val indexVJ = (((2.U * jCount.value + 1.U) * vCount.value * 1125.U) / 1000.U)//.U
 
             
-            val cosVal = cosTable(indexUI) * cosTable(indexVJ)//(math.cos((2 * i + 1) * u * Pi / 16) * math.cos((2 * j + 1) * v * Pi / 16) * 100).toInt.S
+            val cosVal = cosTable(indexUI) * cosTable(indexVJ) / 100.S //(math.cos((2 * i + 1) * u * Pi / 16) * math.cos((2 * j + 1) * v * Pi / 16) * 100).toInt.S
             // sum := sum +& pixelValue * cosVal
 
             when(iCount.value === 7.U && jCount.value === 7.U) {

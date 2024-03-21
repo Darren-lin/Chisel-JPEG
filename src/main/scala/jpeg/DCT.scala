@@ -68,7 +68,7 @@ class DCTChisel extends Module {
 
 
     val cosTable = VecInit.tabulate(360) { i =>
-        (math.cos(i * math.Pi / 180) * 10).toInt.S
+        (math.cos(i * math.Pi / 180) * 100).toInt.S
     }
 
 
@@ -98,11 +98,8 @@ class DCTChisel extends Module {
         }
         is(DCTState.calculating) {
             // Assignes output matrix to calculated DCT values
+            // val sum = Wire(SInt(32.W))
 
-            when(iCount.value === 7.U && jCount.value === 7.U) {
-                sum := 0.S // Initialize sum for each (u, v) iteration
-                // sum = 0.S
-            }
 
             val pixelValue = shiftedBlock(iCount.value)(jCount.value)
             
@@ -112,30 +109,25 @@ class DCTChisel extends Module {
             
             val cosVal = cosTable(indexUI) * cosTable(indexVJ)//(math.cos((2 * i + 1) * u * Pi / 16) * math.cos((2 * j + 1) * v * Pi / 16) * 100).toInt.S
             // sum := sum +& pixelValue * cosVal
-            sum := sum +& pixelValue * cosVal
-            // when(uCount.value === 0.U && vCount.value === 0.U) {
-            //     printf("Sum: %d, u: %d, v: %d, i: %d, j: %d\n", sum, uCount.value,vCount.value,iCount.value,jCount.value)
-            // }
 
+            when(iCount.value === 7.U && jCount.value === 7.U) {
+                sum := 0.S // Initialize sum for each (u, v) iteration
+                // sum = 0.S
+            } .otherwise {
+                sum := sum +& pixelValue * cosVal
+            }
 
+            when(uCount.value === 0.U && (vCount.value === 0.U || vCount.value === 1.U)) {
+                printf("Sum: %d cos: %d, cosVJ: %d, indexVJ: %d, u: %d, v: %d, i: %d, j: %d\n", sum, cosVal, cosTable(indexVJ), indexVJ, uCount.value,vCount.value,iCount.value,jCount.value)
+            }
 
-            // when(iCount.inc() === 8.U) {
-            //     iCount.value := 0.U
-            //     when(jCount.inc() === 8.U) {
-            //         jCount.value := 0.U
-            //         when(vCount.inc() === 8.U) {
-            //             vCount.value := 0.U
-            //             when(uCount.inc() === 8.U) {
-            //                 uCount.value := 0.U
-            //             }
-            //         }
-            //     }
-            // }
             when(uCount.value < 7.U) {
                 // v loop
-                when(vCount.value === 7.U && iCount.value === 7.U) {
+                when(vCount.value === 7.U && iCount.value === 7.U && jCount.value === 7.U) {
                     // Reset v and increment u
                     vCount.value := 0.U
+                    iCount.value := 0.U
+                    jCount.value := 0.U
                     uCount.inc()
                 }.otherwise {
                     // i loop
@@ -168,23 +160,23 @@ class DCTChisel extends Module {
 
             //val alphaU = if (u == 0) (1.0 / math.sqrt(2)) * 100 else 100
             //val alphaV = if (v == 0) (1.0 / math.sqrt(2)) * 100 else 100
-            val alphaU = Mux((uCount.value === 0.U), 70.S, 100.S) //if (uCount.value == 0.U) 70 else 100
-            val alphaV = Mux((vCount.value === 0.U), 70.S, 100.S) //if (vCount.value == 0.U) 70 else 100
+            val alphaU = Mux((uCount.value === 0.U), 7.S, 10.S) //if (uCount.value == 0.U) 70 else 100
+            val alphaV = Mux((vCount.value === 0.U), 7.S, 10.S) //if (vCount.value == 0.U) 70 else 100
             val scaledSum = (alphaU * alphaV * sum / 4.S)
             matrixOutput(uCount.value)(vCount.value) := scaledSum
 
 
             //Print content of matrixOutput when it's in the waiting state
-            when(1.U === 1.U) {
+            when(1.U === 0.U) {
                 printf("u: %d, v: %d, i: %d, j: %d\n\n", uCount.value,vCount.value,iCount.value,jCount.value)
-                // printf("Content of matrixOutput in calc state:\n")
-                // for (i <- 0 until 8) {
-                //     for (j <- 0 until 8) {
-                //         printf("%d ", matrixOutput(i)(j))
-                //     }
-                //     printf("\n")
-                // }
-                // printf("\n")
+                printf("Content of matrixOutput in calc state:\n")
+                for (i <- 0 until 8) {
+                    for (j <- 0 until 8) {
+                        printf("%d ", matrixOutput(i)(j))
+                    }
+                    printf("\n")
+                }
+                printf("\n")
             }
             // matrixOutput := DCT(shiftedBlock)
             state := DCTState.waiting

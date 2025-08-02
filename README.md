@@ -1,6 +1,6 @@
 # Chisel JPEG
 This project implements JPEG compression for raw pixel data values.
-More information can be found in our presentation: https://docs.google.com/presentation/d/1uGHCBY0pUD06bBndzRFlM-fH3voTCw0arw5I-TWHsZk/edit?usp=sharing
+More information can be found in our presentation: https://docs.google.com/presentation/d/17fo0KkAGAcZaYddCFk-VHLDAynLYY7cyG4E8yQqhGuU/edit?usp=sharing
 ## JPEG Compression
 JPEG compression attempts to create patterns in the color values in order to reduce the amount of data that needs to be recorded, thereby reducing the file size.
 
